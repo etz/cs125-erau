@@ -1,0 +1,80 @@
+Script started on Wed 16 Jan 2019 09:29:08 PM MST
+[?1034hsh-4.2$ cat -n ast[Kmt03_nadzieja.c
+     1	#include<stdio.h>
+     2	
+     3	int step4()
+     4	{
+     5	  int check = 1;
+     6	  int value = 0;
+     7	  printf("Please enter an integer between 1-20: ");
+     8	  check = scanf("%d", &value);
+     9	  if(check != 0){
+    10	    if(value > 0 && value < 20){
+    11	      if(value == 8 || value == 11 || value == 18){
+    12	        printf("You entered an %d", value);
+    13	        } else {
+    14	            printf("You entered a %d", value);
+    15	          }
+    16	      } else {
+    17	          printf("The number you entered was not between 1-20");
+    18	    }
+    19	  } else {
+    20	    printf("Idiot! Your input could not be read as a number. Get a life!");
+    21	  }
+    22	}
+    23	
+    24	int step3()
+    25	{
+    26	  int value = 0;
+    27	  printf("Please enter an integer between 1-20: ");
+    28	  scanf("%d", &value);
+    29	  if(value > 0 && value < 20){
+    30	    if(value == 8 || value == 11 || value == 18){
+    31	      printf("You entered an %d", value);
+    32	      } else {
+    33	          printf("You entered a %d", value);
+    34	        }
+    35	    } else {
+    36	        printf("The number you entered was not between 1-20");
+    37	  }
+    38	}
+    39	
+    40	int step2()
+    41	{
+    42	  int value = 0;
+    43	  printf("Please enter an integer between 1-20: ");
+    44	  scanf("%d", &value);
+    45	  if(value > 0 && value < 20){
+    46	    printf("You entered a %d", value);
+    47	  } else {
+    48	    printf("The number you entered was not between 1-20");
+    49	  }
+    50	}
+    51	
+    52	int step1()
+    53	{
+    54	  int value = 0;
+    55	  printf("Please enter an integer between 1-20: ");
+    56	  scanf("%d", &value);
+    57	  printf("You entered a %d", value);
+    58	}
+    59	
+    60	int main()
+    61	{
+    62	  step1();
+    63	  step2();
+    64	  step3();
+    65	  step4();
+    66	  return 0;
+    67	}
+    68	
+sh-4.2$ gcc -ansi asmt03_nadzieja.c
+sh-4.2$ a.out
+Please enter an integer between 1-20: 8
+You entered a 8Please enter an integer between 1-20: 22
+The number you entered was not between 1-20Please enter an integer between 1-20: 11
+You entered an 11Please enter an integer between 1-20: x
+Idiot! Your input could not be read as a number. Get a life!sh-4.2$ exit
+exit
+
+Script done on Wed 16 Jan 2019 09:29:53 PM MST

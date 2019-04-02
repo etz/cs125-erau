@@ -1,0 +1,22 @@
+Script started on Wed 16 Jan 2019 07:57:33 PM MST
+[?1034hsh-4.2$ cat -n asmt1[K01_nadz[K[K[K[K[K[K[K1Na[K[K_nadzieja.c
+     1	#include<stdio.h>
+     2	int main()
+     3	{
+     4	 printf("\n Greetings Earthlings! \n");
+     5	 printf("\n I am from Phoenix Arizona. \n");
+     6	 printf("\n I have taken CS-118 and have prior experience in Python and Web Development. \n");
+     7	}
+     8	
+sh-4.2$ gcc[K[K[Kgcc - [Kans[K[K[K[K-ansi asmt1_nadzieja.c
+sh-4.2$ a/.[K[K.out
+
+ Greetings Earthlings! 
+
+ I am from Phoenix Arizona. 
+
+ I have taken CS-118 and have prior experience in Python and Web Development. 
+sh-4.2$ exit
+exit
+
+Script done on Wed 16 Jan 2019 08:00:03 PM MST

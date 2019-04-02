@@ -1,0 +1,173 @@
+Script started on Mon 11 Feb 2019 10:30:03 AM MST
+[?1034hsh-4.2$ cat -n asmt06_nadzieja.c 
+     1	/*
+     2	*  File: asmt06_nadzieja.c
+     3	*  Project: hw06
+     4	*  Author: Thomas Ethan Nadzieja
+     5	*  Description: Manipulates strings
+     6	*  Version: 1.0 Februrary 8th, 2019
+     7	*  Copyright Thomas Ethan Nadzieja 2019
+     8	*/
+     9	
+    10	#include <stdio.h>
+    11	
+    12	/* replace all lower case letters with upper case letters */
+    13	void stringToUpper(char* str, int maxLength)
+    14	{
+    15	    int i = 0;
+    16	    for (i = 0; i < maxLength && str[i] != '\0'; i++) {
+    17	        if (str[i] > 96 && str[i] < 123)
+    18	            str[i] = str[i]-32;
+    19	    }
+    20	
+    21	}
+    22	
+    23	/* return the number of times letter appears in the string */
+    24	int stringCountChar(char letter, char* str, int maxLength)
+    25	{
+    26	    int count = 0;
+    27	    int match = 0;
+    28	    do {
+    29	        if (str[count] == letter) {
+    30	            match++;
+    31	        }
+    32	        count++;
+    33	    } while (str[count] != '\0');
+    34	    return match;
+    35	}
+    36	
+    37	/* Function: stringLength
+    38	 * Argument: str       - the string array
+    39	 * Returns:  the length of the string
+    40	 * Postcondition: Nothing is changed
+    41	 */
+    42	int stringLength(char* str)
+    43	{
+    44	    int length = 0;
+    45	    do {
+    46	        if (str[length] != '\0') {
+    47	            length++;
+    48	        }
+    49	    } while (str[length] != '\0');
+    50	    return length;
+    51	}
+    52	
+    53	/* Function: safeStringLength
+    54	 * Argument: str       - the string array
+    55	 * Argument: maxLength - the size of the array holding the string
+    56	 * Returns:  the length of the string
+    57	 * Postcondition: If there were no nulls within maxlength,
+    58	 *                function puts a null character at [maxLength - 1]
+    59	 */
+    60	int safeStringLength(char* str, int maxLength)
+    61	{
+    62	    int length = 0;
+    63	    for(maxLength = maxLength; maxLength >= 0; maxLength--){
+    64	        if (str[length] != '\0'){
+    65	            length++;
+    66	        }
+    67	    }
+    68	    return length;
+    69	}
+    70	
+    71	/* Function: stringCopy
+    72	 * Purpose:  Copy the string from source to destination (but unsafe)
+    73	 * Argument: source          - the string to be copied
+    74	 * Argument: destination     - the array into which to copy the string
+    75	 * Precondition:  the source is a valid string with null termination
+    76	 * Postcondition: the destination has the same string as the source
+    77	 */
+    78	void stringCopy(char* source, char* destination)
+    79	{
+    80	    int sloop = 0;
+    81	    do {
+    82	        destination[sloop] = source[sloop];
+    83	        sloop += 1;
+    84	    } while(source[sloop] != '\0');
+    85	}
+    86	
+    87	/* Function: safeStringCopy
+    88	 * Purpose:  Copy the string from source to destination
+    89	 * Argument: source          - the string to be copied
+    90	 * Argument: destination     - the array into which to copy the string
+    91	 * Argument: destinationSize - the size available for destination
+    92	 * Precondition:  the source is a valid string with null termination
+    93	 * Postcondition: the destination has the same string as the source
+    94	 *                but not more than one less than destinationSize
+    95	 * Postcondition: if destination array is filled, last element is null 
+    96	 */
+    97	void safeStringCopy(char* source, char* destination, int destinationSize)
+    98	{
+    99	    int character = 0;
+   100	    for (destinationSize = destinationSize; destinationSize > 0; destinationSize--) {
+   101	        destination[character] = source[character];
+   102	    }
+   103	    destination[destinationSize-1] = '\0';
+   104	}
+   105	
+   106	/* Function: replaceChar
+   107	 * Purpose:  Replace all instances of old character with new character
+   108	 * Argument: old       - the character to be replaced
+   109	 * Argument: new       - the new character to replace the old
+   110	 * Argument: str       - the string array
+   111	 * Argument: maxLength - the size of the array holding the string
+   112	 */
+   113	void replaceChar(char old, char new, char* str, int maxLength)
+   114	{
+   115	    int i = 0;
+   116	    for (i = 0; i < maxLength && str[i] != '\0'; i++)
+   117	        if (str[i] == old)
+   118	            str[i] = new;
+   119	}
+   120	
+   121	#define BUFFER_SIZE 128
+   122	int main(void)
+   123	{
+   124	    char buffer[BUFFER_SIZE] = "";
+   125	    char copy[BUFFER_SIZE] = "";
+   126	    char* result = NULL;
+   127	    int length = 0;
+   128	    int count = 0;
+   129	    int i = 0;
+   130	    printf("Enter a sentence or other string: ");
+   131	    result = fgets(buffer, BUFFER_SIZE, stdin);
+   132	    /* make sure there is at least 1 null */
+   133	    buffer[BUFFER_SIZE - 1] = '\0';
+   134	    /* remove the newline at the end */
+   135	    replaceChar('\n', '\0', buffer, BUFFER_SIZE);
+   136	    /* print the line that was read */
+   137	    printf("%s\n", buffer);
+   138	    /* demonstrate that stringLength() works correctly */
+   139	    length = stringLength(buffer);
+   140	    printf("The length of the string is %d.\n", length);
+   141	    length = safeStringLength(buffer, BUFFER_SIZE);
+   142	    for (i = 0; i < length; i++)
+   143	        printf("-");
+   144	    printf("\n");
+   145	    /* demonstrate that stringToUpper() works correctly */
+   146	    stringToUpper(buffer, BUFFER_SIZE);
+   147	    printf("%s\n", buffer);
+   148	    /* demonstrate that stringCountChar() works correctly */
+   149	    count = stringCountChar(buffer[0], buffer, BUFFER_SIZE);
+   150	    printf("The letter %c appears %d times.\n", buffer[0], count);
+   151	    /* demonstrate that stringCopy works, including length limit */
+   152	    stringCopy(buffer, copy);
+   153	    printf("%s\n", copy);
+   154	    safeStringCopy(buffer, copy, length - 5);
+   155	    printf("%s\n", copy);
+   156	    return 0;
+   157	}
+sh-4.2$ gcc -ansi asmt06_nadzieja.c 
+sh-4.2$ a.out
+Enter a sentence or other string: pickled pears
+pickled pears
+The length of the string is 13.
+-------------
+PICKLED PEARS
+The letter P appears 2 times.
+PICKLED PEARS
+PICKLED PEARS
+sh-4.2$ exit
+exit
+
+Script done on Mon 11 Feb 2019 10:30:54 AM MST

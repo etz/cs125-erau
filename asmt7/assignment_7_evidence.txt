@@ -1,0 +1,211 @@
+Script started on Mon 25 Feb 2019 10:20:28 PM MST
+[?1034hsh-4.2$ cat -n assignment_7.c
+     1	#include <stdio.h>
+     2	#include <stdlib.h>
+     3	#include <math.h>
+     4	
+     5	/* use rand() to get a random double in given range */
+     6	double randomBetween(double lowerLimit, double upperLimit);
+     7	/* assign random doubles to array elements */
+     8	int fillRandom(double *array, int numberToFill, double lowerLimit, double upperLimit);
+     9	/* print the array values one above the other */
+    10	void listTheArrayValues(double* array, int arrayLength);
+    11	/* return the minimum value found in the array */
+    12	double minOfArrayValues(double* array, int arrayLength);
+    13	/* return the maximum value found in the array */
+    14	double maxOfArrayValues(double* array, int arrayLength);
+    15	/* return the sum of the values in the array */
+    16	double sumOfArrayValues(double* array, int arrayLength);
+    17	/* return the mean of the array, using sumOfArrayValues() to get the sum */
+    18	double meanOfArrayValues(double* array, int arrayLength);
+    19	/* return variance of the array, use meanOfArrayValues() to get the mean */
+    20	double populationVariance(double* array, int arrayLength);
+    21	/* return standard deviation, using sqrt() and varianceOfArrayValues */
+    22	double populationStandardDeviation(double* array, int arrayLength);
+    23	#define ARRAY_SIZE 100
+    24	#define DATA_LENGTH 75
+    25	int main(void) {
+    26	    double myArray[ARRAY_SIZE];
+    27	    int lengthFilled = fillRandom(myArray, DATA_LENGTH, 40.0, 60.0);
+    28	    listTheArrayValues(myArray, lengthFilled);
+    29	    printf("The sum of the %d values was %.3f\n", lengthFilled,
+    30	           sumOfArrayValues(myArray, lengthFilled));
+    31	    printf("The smallest was %.3f, and the largest was %.3f\n",
+    32	           minOfArrayValues(myArray, lengthFilled),
+    33	           maxOfArrayValues(myArray, lengthFilled));
+    34	    printf("The average of the values was %.3f\n",
+    35	           meanOfArrayValues(myArray, lengthFilled));
+    36	    printf("The population standard deviation was %.3f\n",
+    37	           populationStandardDeviation(myArray, lengthFilled));
+    38	    return 0;
+    39	}
+    40	
+    41	/* use rand() to get a random double in given range */
+    42	double randomBetween(double lowerLimit, double upperLimit) {
+    43	    double range = upperLimit - lowerLimit;
+    44	    return (rand() / (RAND_MAX + 1.0)) * range + lowerLimit;
+    45	}
+    46	
+    47	/* assign random doubles to array elements */
+    48	int fillRandom(double *array, int numberToFill, double lowerLimit, double upperLimit) {
+    49	    int i;
+    50	    for (i = 0; i < numberToFill; i++) {
+    51	        array[i] = randomBetween(lowerLimit, upperLimit);
+    52	    }
+    53	}
+    54	/* print the array values one above the other */
+    55	void listTheArrayValues(double* array, int arrayLength) {
+    56	    int i;
+    57	    int counter = 0;
+    58	    for (i = 0; i < arrayLength; i++) {
+    59	        printf("number[%d] is %.3f\n", counter, array[i]);
+    60	        counter ++;
+    61	    }
+    62	}
+    63	
+    64	/* return the minimum value found in the array */
+    65	double minOfArrayValues(double* array, int arrayLength) {
+    66	    int count = 0;
+    67	    double min = array[0];
+    68	    do {
+    69	        if (array[count] < min)
+    70	            min = array[count];
+    71	        count++;
+    72	    } while (count < arrayLength);
+    73	    return (double)min;
+    74	}
+    75	/* return the maximum value found in the array */
+    76	double maxOfArrayValues(double* array, int arrayLength) {
+    77	    int count = 0;
+    78	    double max = array[0];
+    79	    do {
+    80	        if (array[count] > max)
+    81	            max = array[count];
+    82	        count++;
+    83	    } while (count < arrayLength);
+    84	    return (double)max;
+    85	}
+    86	/* return the sum of the values in the array */
+    87	double sumOfArrayValues(double* array, int arrayLength) {
+    88	    int i;
+    89	    double sum = 0;
+    90	    for (i = 0; i < arrayLength; i++) {
+    91	        sum += array[i];
+    92	    }
+    93	    return sum;
+    94	}
+    95	/* return the mean of the array, using sumOfArrayValues() to get the sum */
+    96	double meanOfArrayValues(double* array, int arrayLength) {
+    97	    double sum = sumOfArrayValues (array, arrayLength);
+    98	    double mean = (sum / ((double)arrayLength));
+    99	    return mean;
+   100	}
+   101	/* return variance of the array, use meanOfArrayValues() to get the mean */
+   102	double populationVariance(double* array, int arrayLength) {
+   103	    
+   104	    double variance;
+   105	    double sumOfMean = 0;
+   106	    double mean = meanOfArrayValues(array, arrayLength);
+   107	    int i;
+   108	    for (i = 0; i < arrayLength; i++) {
+   109	        sumOfMean += pow((array[i] - mean), 2);
+   110	    }
+   111	    variance = (sumOfMean / ((double)arrayLength));
+   112	    return variance;
+   113	    
+   114	}
+   115	
+   116	double populationStandardDeviation(double* array, int arrayLength) {
+   117	    
+   118	    double variance = populationVariance(array, arrayLength);
+   119	    double deviation = pow(variance, .5);
+   120	    return deviation;
+   121	    
+   122	}
+sh-4.2$ gcc125 -lm assignment_7.c
+sh: gcc125: command not found
+sh-4.2$ gcc 0l[K[K-lm assignment_7.c
+sh-4.2$ a.out
+number[0] is 56.804
+number[1] is 47.888
+number[2] is 55.662
+number[3] is 55.969
+number[4] is 58.233
+number[5] is 43.951
+number[6] is 46.704
+number[7] is 55.365
+number[8] is 45.555
+number[9] is 51.079
+number[10] is 49.548
+number[11] is 52.577
+number[12] is 47.296
+number[13] is 50.268
+number[14] is 59.045
+number[15] is 58.324
+number[16] is 52.714
+number[17] is 54.346
+number[18] is 42.832
+number[19] is 52.139
+number[20] is 40.326
+number[21] is 44.858
+number[22] is 42.745
+number[23] is 56.084
+number[24] is 43.134
+number[25] is 48.019
+number[26] is 42.596
+number[27] is 42.176
+number[28] is 59.978
+number[29] is 44.365
+number[30] is 50.259
+number[31] is 56.782
+number[32] is 52.253
+number[33] is 45.921
+number[34] is 52.751
+number[35] is 50.486
+number[36] is 49.872
+number[37] is 59.456
+number[38] is 45.850
+number[39] is 55.427
+number[40] is 50.535
+number[41] is 55.398
+number[42] is 48.005
+number[43] is 57.831
+number[44] is 45.666
+number[45] is 47.049
+number[46] is 56.154
+number[47] is 58.381
+number[48] is 41.395
+number[49] is 58.987
+number[50] is 50.520
+number[51] is 41.721
+number[52] is 43.844
+number[53] is 53.265
+number[54] is 57.805
+number[55] is 46.978
+number[56] is 41.283
+number[57] is 40.400
+number[58] is 49.154
+number[59] is 41.262
+number[60] is 44.766
+number[61] is 59.413
+number[62] is 58.044
+number[63] is 57.018
+number[64] is 45.333
+number[65] is 50.795
+number[66] is 47.504
+number[67] is 55.205
+number[68] is 50.251
+number[69] is 53.354
+number[70] is 50.632
+number[71] is 40.786
+number[72] is 48.753
+number[73] is 58.637
+number[74] is 58.616
+The sum of the 75 values was 3784.375
+The smallest was 40.326, and the largest was 59.978
+The average of the values was 50.458
+The population standard deviation was 5.871
+sh-4.2$ x[Kexit
+exit
+
+Script done on Mon 25 Feb 2019 10:21:06 PM MST

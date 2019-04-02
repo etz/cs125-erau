@@ -1,0 +1,152 @@
+Script started on Fri 08 Feb 2019 10:25:38 AM MST
+[?1034hsh-4.2$ cat -n asmt05_nadzieja.c 
+     1	/*
+     2	*  File: asmt05_nadzieja.c
+     3	*  Project: hw05
+     4	*  Author: Thomas Ethan Nadzieja
+     5	*  Description: Demonstrates the logic of a slot machine
+     6	*  Version: 1.0 Februrary 5th, 2019
+     7	*  Copyright Thomas Ethan Nadzieja 2019
+     8	*/
+     9	
+    10	#include <stdio.h>
+    11	#include <stdlib.h>
+    12	
+    13	/* Function: findHex
+    14	* Purpose: finds the hex code of each character
+    15	* Argument: char* input - character being translated
+    16	* Returns: string
+    17	* Precondition: N/A
+    18	* Postcondition:  N/A
+    19	*/
+    20	void findHex(char letter) {
+    21	    printf("%x hex, ", letter);
+    22	}
+    23	
+    24	/* Function: findDec
+    25	* Purpose: finds the decimal value of each character
+    26	* Argument: char* input - character being translated
+    27	* Returns: int
+    28	* Precondition: N/A
+    29	* Postcondition:  N/A
+    30	*/
+    31	void findDec(char letter) {
+    32	    printf("%d decimal, ", letter);
+    33	}
+    34	
+    35	/* Function: findBin
+    36	* Purpose: finds the binary value of each character
+    37	* Argument: char* input - character being translated
+    38	* Returns: int
+    39	* Precondition: N/A
+    40	* Postcondition:  throw value to findBits
+    41	*/
+    42	
+    43	int findBin(char letter) {
+    44	    int mask = 128;
+    45	    int i = 8;
+    46	    int decimal = ("%d", letter);
+    47	    while (i > 0) {
+    48	        if ((decimal & mask) == mask) {
+    49	            printf("1");
+    50	        } else {
+    51	            printf("0");
+    52	        }
+    53	        mask >>= 1;
+    54	        i--;
+    55	    }
+    56	    return 0;
+    57	}
+    58	
+    59	/* Function: findBits
+    60	* Purpose: finds the bit set of each character
+    61	* Argument: char* input - character being translated
+    62	* Returns: int
+    63	* Precondition: requires Binary to be found
+    64	* Postcondition:
+    65	*/
+    66	
+    67	int findBits(char letter) {
+    68	    int bits = 0;
+    69	    int mask = 128;
+    70	    int i = 8;
+    71	    int decimal = ("%d", letter);
+    72	    while (i > 0) {
+    73	        if ((decimal & mask) == mask) {
+    74	            bits += 1;
+    75	        }
+    76	        mask >>= 1;
+    77	        i--;
+    78	    }
+    79	    printf("%d", bits);
+    80	    findPar(bits);
+    81	}
+    82	
+    83	/* Function: findPar
+    84	* Purpose: finds the parity of each character
+    85	* Argument: char* input - character being translated
+    86	* Returns: string
+    87	* Precondition:
+    88	* Postcondition:done
+    89	*/
+    90	
+    91	int findPar(int bits) {
+    92	    printf(" bits are set, parity is ");
+    93	    if (bits % 2 == 0) {
+    94	        printf("even");
+    95	        return;
+    96	    }
+    97	    printf("odd");
+    98	}
+    99	
+   100	/* Function: analyzeChar
+   101	* Purpose: Completes the function for each letter
+   102	* Argument: char* input - character being translated
+   103	* Returns: printf statement
+   104	* Precondition: input from user
+   105	* Postcondition: string output
+   106	*/
+   107	
+   108	void analyzeChar(char input) {
+   109	    if (input == '\n') {
+   110	        printf("The ASCII code for \'\\n\' is");
+   111	    } else {
+   112	        printf("The ASCII code for \'%c\' is", input);
+   113	    }
+   114	    findHex(input);
+   115	    findDec(input);
+   116	    findBin(input);
+   117	    printf(" as binary, ");
+   118	    findBits(input);
+   119	    printf("\n");
+   120	}
+   121	
+   122	
+   123	
+   124	int main() {
+   125	    char c;
+   126	    printf("Please type a string: ");
+   127	    do {
+   128	        scanf("%c", & c);
+   129	        analyzeChar(c);
+   130	    } while (c != '\n');
+   131	    return 0;
+   132	}sh-4.2$ gcc -ansi asmt05_nadzieja.c 
+sh-4.2$ a.out
+Please type a string: Hello there
+The ASCII code for 'H' is48 hex, 72 decimal, 01001000 as binary, 2 bits are set, parity is even
+The ASCII code for 'e' is65 hex, 101 decimal, 01100101 as binary, 4 bits are set, parity is even
+The ASCII code for 'l' is6c hex, 108 decimal, 01101100 as binary, 4 bits are set, parity is even
+The ASCII code for 'l' is6c hex, 108 decimal, 01101100 as binary, 4 bits are set, parity is even
+The ASCII code for 'o' is6f hex, 111 decimal, 01101111 as binary, 6 bits are set, parity is even
+The ASCII code for ' ' is20 hex, 32 decimal, 00100000 as binary, 1 bits are set, parity is odd
+The ASCII code for 't' is74 hex, 116 decimal, 01110100 as binary, 4 bits are set, parity is even
+The ASCII code for 'h' is68 hex, 104 decimal, 01101000 as binary, 3 bits are set, parity is odd
+The ASCII code for 'e' is65 hex, 101 decimal, 01100101 as binary, 4 bits are set, parity is even
+The ASCII code for 'r' is72 hex, 114 decimal, 01110010 as binary, 4 bits are set, parity is even
+The ASCII code for 'e' is65 hex, 101 decimal, 01100101 as binary, 4 bits are set, parity is even
+The ASCII code for '\n' isa hex, 10 decimal, 00001010 as binary, 2 bits are set, parity is even
+sh-4.2$ exit
+exit
+
+Script done on Fri 08 Feb 2019 10:25:56 AM MST

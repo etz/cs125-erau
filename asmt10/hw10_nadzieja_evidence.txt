@@ -1,0 +1,72 @@
+Script started on Thu 21 Mar 2019 08:15:35 PM MST
+[?1034hsh-4.2$ cat -n assignment_10.c 
+     1	#include <stdio.h>
+     2	#include <stdlib.h>
+     3	#include <math.h>
+     4	
+     5	typedef struct {
+     6	 double x;
+     7	 double y;
+     8	} Point;
+     9	
+    10	typedef struct {
+    11	 Point angle0;
+    12	 Point angle1;
+    13	 Point angle2;
+    14	} Triangle;
+    15	
+    16	Point enterPoint();
+    17	void printVertices(const Triangle *tr);
+    18	double distanceBetweenPoints(const Point *p1, const Point *p2);
+    19	double getPerimeter(const Triangle* tr);
+    20	
+    21	
+    22	int main() {
+    23	    Triangle T;
+    24	    T.angle0 = enterPoint();
+    25	    T.angle1 = enterPoint();
+    26	    T.angle2 = enterPoint();
+    27	    printVertices(&T);
+    28	    printf ("The perimeter is %.2f", getPerimeter(&T));
+    29	}
+    30	
+    31	Point enterPoint() {
+    32	    printf ("Enter the x and y coordinates separated by a comma: ");
+    33	    Point randpoint;
+    34	    scanf ("%lf,", &randpoint.x);
+    35	    scanf ("%lf", &randpoint.y);
+    36	    return randpoint;
+    37	}
+    38	
+    39	void printVertices(const Triangle *tr) {
+    40	    printf ("The point coordinates are: ");
+    41	    printf ("[%.2f, %.2f], ", tr->angle0.x, tr->angle0.y);
+    42	    printf ("[%.2f, %.2f], ", tr->angle1.x, tr->angle1.y);
+    43	    printf ("and [%.2f, %.2f]\n", tr->angle2.x, tr->angle2.y);
+    44	}
+    45	
+    46	double distanceBetweenPoints(const Point *p1, const Point *p2) {
+    47	    double x = (p2->x - p1->x);
+    48	    double y = (p2->y - p1->y);
+    49	    double distance = sqrt((x*x)+(y*y));
+    50	    return distance;
+    51	}
+    52	
+    53	double getPerimeter(const Triangle* tr) {
+    54	    double a, b, c;
+    55	    a = distanceBetweenPoints(&tr->angle0, &tr->angle1);
+    56	    b = distanceBetweenPoints(&tr->angle1, &tr->angle2);
+    57	    c = distanceBetweenPoints(&tr->angle2, &tr->angle0);
+    58	    double perimeter = a + b + c;
+    59	    return perimeter;
+    60	}
+sh-4.2$ gcc -lm assignment_10.c 
+sh-4.2$ a.out
+Enter the x and y coordinates separated by a comma: 0,0
+Enter the x and y coordinates separated by a comma: 3,0
+Enter the x and y coordinates separated by a comma: 3,4
+The point coordinates are: [0.00, 0.00], [3.00, 0.00], and [3.00, 4.00]
+The perimeter is 12.00sh-4.2$ exit
+exit
+
+Script done on Thu 21 Mar 2019 08:16:09 PM MST

@@ -1,0 +1,54 @@
+Script started on Fri 08 Mar 2019 11:01:21 AM MST
+[?1034hsh-4.2$ catn[K - [Kn main.c 
+     1	#include <stdio.h>
+     2	#include <stdlib.h>
+     3	
+     4	typedef struct {
+     5	 double x;
+     6	 double y;
+     7	} Point;
+     8	
+     9	typedef struct {
+    10	 Point angle0;
+    11	 Point angle1;
+    12	 Point angle2;
+    13	} Triangle;
+    14	
+    15	Point getRandomPoint();
+    16	Point FindCentroid(Triangle T);
+    17	
+    18	int main() {
+    19	    Triangle T;
+    20	    Point centroidAns;
+    21	    T.angle0 = getRandomPoint();
+    22	    T.angle1 = getRandomPoint();
+    23	    T.angle2 = getRandomPoint();
+    24	    printf("The vertices of the angle are ");
+    25	    printf ("[%.2f, %.2f], ", T.angle0.x, T.angle0.y);
+    26	    printf ("[%.2f, %.2f], ", T.angle1.x, T.angle1.y);
+    27	    printf ("and [%.2f, %.2f]", T.angle2.x, T.angle2.y);
+    28	    centroidAns = FindCentroid(T);
+    29	    printf("\nThe centroid is [%.2f, %.2f]", centroidAns.x, centroidAns.y);
+    30	}
+    31	
+    32	Point getRandomPoint() {
+    33	    Point randpoint;
+    34	    randpoint.x = (rand() / (RAND_MAX + 1.0)) * 1 + 0;
+    35	    randpoint.y = (rand() / (RAND_MAX + 1.0)) * 1 + 0;
+    36	    return randpoint;
+    37	}
+    38	
+    39	Point FindCentroid(Triangle T) {
+    40	    Point centroid;
+    41	    centroid.x = (T.angle0.x + T.angle1.x + T.angle2.x) / 3;
+    42	    centroid.y = (T.angle0.y + T.angle1.y + T.angle2.y) / 3;
+    43	    return centroid;
+    44	}
+    45	
+sh-4.2$ gcc1[K main.c 
+sh-4.2$ a.out
+The vertices of the angle are [0.84, 0.39], [0.78, 0.80], and [0.91, 0.20]
+The centroid is [0.84, 0.46]sh-4.2$ exit
+exit
+
+Script done on Fri 08 Mar 2019 11:01:43 AM MST

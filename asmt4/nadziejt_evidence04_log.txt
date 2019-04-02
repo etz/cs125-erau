@@ -1,0 +1,158 @@
+Script started on Mon 04 Feb 2019 10:20:51 AM MST
+[?1034hsh-4.2$ cat -n asmt04_nadzieja.c 
+     1	/*
+     2	 *  File: asmt04_nadzieja.c
+     3	 *  Project: hw04
+     4	 *  Author: Thomas Ethan Nadzieja
+     5	 *  Description: Demonstrates the logic of a slot machine
+     6	 *  Version: 1.0 Februrary 1st, 2019
+     7	 *  Copyright Thomas Ethan Nadzieja 2019
+     8	*/
+     9	
+    10	#include <stdio.h>
+    11	#include <stdlib.h>
+    12	
+    13	/* Function: randomBetween
+    14	 * Purpose: find an integer between two numbers
+    15	 * Argument: smallestInteger - the low end of range
+    16	 * Argument: largestInteger – the high end of range
+    17	 * Returns: random integer
+    18	 * Precondition: determined range
+    19	 * Postcondition: N/A
+    20	 */
+    21	
+    22	int randomBetween (int smallestInteger, int largestInteger) {
+    23	    double range = 1.0 + largestInteger - smallestInteger;
+    24	    double normalizedRand = rand() / (RAND_MAX + 1.0);
+    25	    return (int)(normalizedRand * range + smallestInteger);
+    26	}
+    27	
+    28	/* Function: printImageName
+    29	 * Purpose: returns a character to the slot machines console
+    30	 * Argument: slot - returns the value of the slot
+    31	 * Returns: char
+    32	 * Precondition: randomBetween() and playGame()
+    33	 * Postcondition: N/A
+    34	 */
+    35	
+    36	printImageName(int slot) {
+    37	    if (slot == 1) {
+    38	        return '#';
+    39	    } else if (slot == 2) {
+    40	        return '$';
+    41	    } else if (slot == 3) {
+    42	        return '@';
+    43	    } else {
+    44	        return '+';
+    45	    }
+    46	}
+    47	
+    48	/* Function: printLosingGame
+    49	 * Purpose: returns a slot turn which did not win
+    50	 * Argument: slot1, slot2, slot3 - values of the slots
+    51	 * Returns: console log
+    52	 * Precondition: playGame()
+    53	 * Postcondition: N/A
+    54	 */
+    55	
+    56	printLosingGame(int slot1, int slot2, int slot3) {
+    57	    printf("| %c ", printImageName(slot1));
+    58	    printf("|| %c ", printImageName(slot2));
+    59	    printf("|| %c |", printImageName(slot3));
+    60	}
+    61	
+    62	/* Function: printWinningGame
+    63	 * Purpose: returns a slot turn which did win
+    64	 * Argument: slot1, slot2, slot3 - values of the slots
+    65	 * Returns: console log
+    66	 * Precondition: playGame()
+    67	 * Postcondition: N/A
+    68	 */
+    69	
+    70	printWinningGame(int slot1, int slot2, int slot3) {
+    71	    printf("| %c ", printImageName(slot1));
+    72	    printf("|| %c ", printImageName(slot2));
+    73	    printf("|| %c |", printImageName(slot3));
+    74	    printf("  You win!");
+    75	}
+    76	
+    77	/* Function: playGame
+    78	 * Purpose: begins the process of creating a slot turn
+    79	 * Returns: console log
+    80	 * Precondition: Requires user to press enter
+    81	 * Postcondition: Returns printWinningGame() or printLosingGame()
+    82	 */
+    83	
+    84	playGame() {
+    85	    int slot1 = randomBetween(1, 4);
+    86	    int slot2 = randomBetween(1, 4);
+    87	    int slot3 = randomBetween(1, 4);
+    88	    if (slot1 == slot2 && slot2 == slot3 && slot1 == slot3) {
+    89	        printWinningGame(slot1, slot2, slot3);
+    90	    } else {
+    91	        printLosingGame(slot1, slot2, slot3);
+    92	    }
+    93	}
+    94	
+    95	int main () {
+    96	    int playing = 1;
+    97	    char userInput;
+    98	    printf("Press enter to play or q to quit:");
+    99	    while (playing == 1) {
+   100	    scanf("%c", &userInput);
+   101	        if(userInput == 'q') {
+   102	            playing = 0;
+   103	        } else {
+   104	            playGame();
+   105	        }
+   106	    }
+   107	}
+sh-4.2$ gcc -ansi asmt04_nadzieja.c 
+sh-4.2$ a.out
+Press enter to play or q to quit:
+| + || $ || + |
+| + || + || # |
+| $ || + || $ |
+| @ || $ || @ |
+| $ || @ || + |
+| + || @ || @ |
+| # || @ || # |
+| # || # || + |
+| # || $ || # |
+| # || + || # |
+| @ || + || @ |
+| $ || @ || @ |
+| $ || + || $ |
+| + || @ || + |
+| $ || + || $ |
+| $ || + || + |
+| # || + || @ |
+| # || # || @ |
+| + || $ || # |
+| # || $ || # |
+| # || + || + |
+| + || $ || @ |
+| $ || + || @ |
+| @ || @ || # |
+| $ || + || + |
+| @ || $ || @ |
+| @ || $ || @ |
+| # || $ || + |
+| + || $ || # |
+| + || $ || @ |
+| + || @ || @ |
+| + || $ || + |
+| $ || + || @ |
+| + || $ || # |
+| + || + || # |
+| + || @ || $ |
+| @ || $ || + |
+| $ || $ || # |
+| # || $ || @ |
+| $ || # || + |
+| # || # || $ |
+| + || + || + |  You win!^C
+sh-4.2$ exit
+exit
+
+Script done on Mon 04 Feb 2019 10:22:10 AM MST
