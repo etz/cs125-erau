@@ -1,0 +1,75 @@
+Script started on Mon 15 Apr 2019 01:58:59 AM MST
+[?1034hsh-4.2$ cat -n week13.c
+     1	#include <stdio.h>
+     2	#include <stdlib.h>
+     3	
+     4	
+     5	void printXYZ(int v1, int v2, int v3){
+     6	    printf("x: %d\n", v1);
+     7	    printf("y: %d\n", v2);
+     8	    printf("z: %d\n", v3);
+     9	}
+    10	
+    11	
+    12	void enterXYZ(int *prtX, int *prtY, int *prtZ){
+    13	    printf("Enter three values:");
+    14	    while (scanf( "%d, %d, %d", prtX, prtY, prtZ) != 3) {
+    15	        printf("There was an issue entering those integers. Try again.");
+    16	    }
+    17	}
+    18	void swap(int *val1, int *val2) {
+    19	    int temp = *val1;
+    20	    *val1 = *val2;
+    21	    *val2 = temp;
+    22	}
+    23	
+    24	void xyzAscending(int *px, int *py, int *pz){
+    25	    if (*pz > *py){
+    26	        swap(pz, py);
+    27	    }
+    28	    if (*py > *px){
+    29	        swap(py, px);
+    30	    }
+    31	    if (*pz > *py) {
+    32	        swap(pz, py);
+    33	    }
+    34	}
+    35	
+    36	
+    37	int main() {
+    38	    int x = 0;
+    39	    int y = 0;
+    40	    int z = 0;
+    41	    printXYZ(x,y,z);
+    42	    enterXYZ(&x, &y, &z);
+    43	    printXYZ(x,y,z);
+    44	    xyzAscending(&x, &y, &z);
+    45	    printXYZ(x,y,z);
+    46	}
+sh-4.2$ gcc week13.c
+sh-4.2$ a.out
+x: 0
+y: 0
+z: 0
+Enter three values:7,5,3
+x: 7
+y: 5
+z: 3
+x: 7
+y: 5
+z: 3
+sh-4.2$ a.out
+x: 0
+y: 0
+z: 0
+Enter three values:3,7,5
+x: 3
+y: 7
+z: 5
+x: 7
+y: 5
+z: 3
+sh-4.2$ exit
+exit
+
+Script done on Mon 15 Apr 2019 01:59:36 AM MST

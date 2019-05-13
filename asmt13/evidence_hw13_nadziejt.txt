@@ -1,0 +1,478 @@
+Script started on Thu 18 Apr 2019 01:49:48 PM MST
+[?1034hsh-4.2$ cat -n IntegerSet.c
+     1	#include <stdio.h>
+     2	#include <stdlib.h>
+     3	#include "IntegerSet.h"
+     4	
+     5	static int recursiveSearch(const int array[], int value,int low, int high);
+     6	
+     7	int isetInit(IntegerSet *iset, int bufferSize) {
+     8	    iset->data = malloc( bufferSize * sizeof(int) );
+     9	    if (iset->data != NULL){
+    10	        iset->dataLength = 0;
+    11	        iset->dataCapacity = bufferSize;
+    12	        return 1;
+    13	    } else {
+    14	        iset->dataLength = 0;
+    15	        iset->dataCapacity = 0;
+    16	        return 0;
+    17	    }
+    18	    
+    19	    
+    20	}
+    21	
+    22	void isetClear(IntegerSet *iset) {
+    23	    
+    24	    int i;
+    25	    for (i = 0; i < iset->dataLength; i++) {
+    26	        iset->data[i] = '\0';
+    27	    }
+    28	    iset->dataLength = 0;
+    29	}
+    30	
+    31	int isetAdd(IntegerSet *iset, int value){
+    32	    
+    33	    int i = 0;
+    34	    int j = 0;
+    35	    if(iset->dataLength < iset->dataCapacity && isetIndex(iset, value) == -1){
+    36	        for (i = 0; i < iset->dataLength && iset->data[i] < value; i++);
+    37	        iset->dataLength++;
+    38	        for(j = (iset->dataLength - 1); j>= i; j--){
+    39	            iset->data[j + 1] = iset->data[j];
+    40	        }
+    41	        iset->data[i] = value;
+    42	        return 1;
+    43	    }
+    44	    return 0;
+    45	}
+    46	
+    47	
+    48	int isetIndex(const IntegerSet *iset, int value) {
+    49	    
+    50	    int x;
+    51	    for (x = 0; x < iset->dataLength; x++) {
+    52	        if (iset->data[x] == value) {
+    53	            return x;
+    54	        }
+    55	    }
+    56	    return -1;
+    57	}
+    58	
+    59	int isetAddArray(IntegerSet *iset, const int array[], int arrLen) {
+    60	    int x;
+    61	    int c;
+    62	    for (x = 0; x < arrLen; x++) {
+    63	        isetAdd(iset, array[x]);
+    64	        c++;
+    65	    }
+    66	    return c;
+    67	}
+    68	
+    69	int isetRemoveFast(IntegerSet *iset, int index) {
+    70	    isetRemoveStable(iset,index);
+    71	}
+    72	
+    73	int isetRemoveStable(IntegerSet *iset, int index) {
+    74	    
+    75	    if (index < 0 || index >= iset->dataLength) {
+    76	        return 0;
+    77	    }
+    78	    else {
+    79	        int x;
+    80	        iset->data[index] =  0;
+    81	        for (x = (index + 1); x < iset->dataLength; x++) {
+    82	            iset->data[x - 1] = iset->data[x];
+    83	        }
+    84	        iset->dataLength --;
+    85	        return 1;
+    86	    }
+    87	}
+    88	
+    89	void isetPrint(const IntegerSet *iset, int numberOfColumns) {
+    90	    int i = 0;
+    91	    for (i = 0; i < iset->dataLength; i++) {
+    92	        if (i % numberOfColumns== 0 && i != 0)
+    93	            fputc('\n', stdout);
+    94	        printf("%6d", iset->data[i]);
+    95	    }
+    96	    fputc('\n', stdout);
+    97	}
+    98	
+    99	int isetCopy(const IntegerSet *source, IntegerSet *copy){
+   100	    isetClear(copy);
+   101	    return isetAddArray(copy, source->data, source->dataLength);
+   102	}
+   103	
+   104	void isetFree(IntegerSet *iset){
+   105	    if (iset->data != NULL){
+   106	        free(iset->data);
+   107	        iset->dataCapacity = 0;
+   108	        iset->dataLength = 0;
+   109	        iset->data = NULL;
+   110	    }
+   111	}
+   112	
+   113	
+   114	int isetResize(IntegerSet *iset, int size) {
+   115	    int *tempPtr;
+   116	    tempPtr = realloc(iset->data, size * sizeof(int));
+   117	    if (tempPtr != NULL){
+   118	        iset->dataCapacity = size;
+   119	        if (iset->dataLength > size)
+   120	            iset->dataLength = size;
+   121	        iset->data = tempPtr;
+   122	        return 1;
+   123	    } else
+   124	        return 0;
+   125	    return 0;
+   126	    
+   127	}
+   128	
+   129	
+   130	IntegerSet* isetClone(const IntegerSet *iset){}
+   131	IntegerSet* isetDestroy(IntegerSet *iset){}
+   132	
+   133	
+   134	/*int isetIndexFast(const IntegerSet *iset, int value) {
+   135	    return recursiveSearch(iset->data, value, 0, iset->dataLength–1);
+   136	
+   137	}*/
+sh-4.2$ cat -n IntegerSeet[K[Kt.h
+     1	/*
+     2	 * File:    IntegerSet.h
+     3	 * Project: Assignment 12
+     4	 * Author:  Michael Van Hilst
+     5	 * Version: 2.1 April 13, 2018 Made isetAddArray array argument const.
+     6	 *
+     7	 * Copyright (c) 2017,2018,2019 Michael Van Hilst all rights reserved
+     8	 * Distribution without written permission of the author is prohibited
+     9	 */
+    10	#ifndef INTEGER_SET_H
+    11	#define INTEGER_SET_H
+    12	
+    13	typedef struct {
+    14	    int *data;
+    15	    int dataCapacity;
+    16	    int dataLength;
+    17	} IntegerSet;
+    18	
+    19	/* from assignment 11 - unchanged except struct type */
+    20	void isetPrint(const IntegerSet *iset, int columns);
+    21	void isetClear(IntegerSet *iset);
+    22	int isetIndex(const IntegerSet *iset, int value);
+    23	int isetRemoveFast(IntegerSet *iset, int index);
+    24	int isetRemoveStable(IntegerSet *iset, int index);
+    25	int isetAddArray(IntegerSet *iset, const int array[], int arrayLength);
+    26	
+    27	/* for assignment 12 new behaviors */
+    28	int isetAdd(IntegerSet *iset, int value);
+    29	int isetCopy(const IntegerSet *source, IntegerSet *copy);
+    30	
+    31	/* for assignment 12 new memory management */
+    32	int isetInit(IntegerSet *iset, int size);
+    33	void isetFree(IntegerSet *iset);
+    34	int isetResize(IntegerSet *iset, int size);
+    35	
+    36	/* for assignment 12 extra credit */
+    37	IntegerSet* isetCreate(int size);
+    38	IntegerSet* isetClone(const IntegerSet *iset);
+    39	IntegerSet* isetDestroy(IntegerSet *iset);
+    40	
+    41	/* for assignment 13 coming */
+    42	int isetAdd(IntegerSet *iset, int value);
+    43	int isetIndexFast(const IntegerSet *iset, int value);
+    44	
+    45	#endif /* INTEGER_SET_H */
+sh-4.2$ cat -n hw13.c
+     1	/*
+     2	 * File:    hw14.c
+     3	 * Project: Homework 14
+     4	 * Purpose: test driver for student homework
+     5	 * Author:  Michael Van Hilst
+     6	 * Version: 1.0 November 29, 2017
+     7	 *          1.1 April 8, 2019 Removed use of isetCreate and isetClone 
+     8	 *
+     9	 * Copyright 2017 (c) Michael Van Hilst All rights reserverd.
+    10	 */
+    11	#include <stdio.h>      /* for printf() */
+    12	#include <stdlib.h>     /* for rand() and RAND_MAX */
+    13	#include <sys/time.h>   /* for struct timeval and gettimeofday() */
+    14	#include "IntegerSet.h" /* homework project header file */
+    15	
+    16	static int fillRandom(int array[], int arrLen, int lowerBound, int upperBound);
+    17	static int myrand(void);
+    18	#define MYRAND_MAX 32768
+    19	static void printTimeDiff(struct timeval *first, struct timeval *second);
+    20	
+    21	/* DATASZ is set to exceed size of array in the IntegerBuffer */
+    22	#define DATASZ 48
+    23	#define BIGSZ 1000
+    24	#define NUMTESTS 8
+    25	int main(void) {
+    26	    int i = 0;
+    27	    int index1 = 0;
+    28	    int testIndex[8];
+    29	    int testValue[8] = { 3840, 4995, -24, 77, 4000, 309, 2050, 4539 };
+    30	    IntegerSet iset;
+    31	    IntegerSet copy;
+    32	    struct timeval startTime;
+    33	    struct timeval finishTime;
+    34	    int data[DATASZ];
+    35	    int bigData[BIGSZ];
+    36	    /* test that isetCreate is working correctly */
+    37	    printf("Phase 1: test that isetInit is working correctly\n");
+    38	    isetInit(&iset, 35);
+    39	    printf("capacity: %d, length: %d\n", iset.dataCapacity, iset.dataLength);
+    40	    /* test that isetAdd is working correctly */
+    41	    printf("Phase 2: test that isetAdd is working correctly\n");
+    42	    isetAdd(&iset, 5);
+    43	    isetAdd(&iset, 17);
+    44	    isetAdd(&iset, 2);
+    45	    isetPrint(&iset, 10);
+    46	    /* test that isetAddArray is working correctly */
+    47	    printf("Phase 3: test that isetAddArray is working correctly\n");
+    48	    fillRandom(data, DATASZ, 20, 50);
+    49	    isetAddArray(&iset, data, DATASZ);
+    50	    isetPrint(&iset, 10);
+    51	    /* test that isetAdd is working with negative numbers */
+    52	    printf("Phase 4: test that isetAdd is working with negative numbers\n");
+    53	    fillRandom(data, 20, -25, -5);
+    54	    isetAddArray(&iset, data, 20);
+    55	    isetPrint(&iset, 10);
+    56	    /* test that isetClear is working correctly */
+    57	    printf("Phase 5: test that isetClear is working correctly\n");
+    58	    isetClear(&iset);
+    59	    for (i = 0; i < 5; i++)
+    60	        isetAdd(&iset, i);
+    61	    for (i = 5; i > 0; i--)
+    62	        isetAdd(&iset, i);
+    63	    isetPrint(&iset, 10);
+    64	    /* test that isetIndex, isetRIndex, and isetRemove work correctly */
+    65	    printf("Phase 6: test that isetIndex & isetRemoveStable work correctly\n");
+    66	    isetRemoveStable(&iset, isetIndex(&iset, 2));
+    67	    isetRemoveStable(&iset, isetIndex(&iset, 4));
+    68	    isetRemoveStable(&iset, isetIndex(&iset, 0));
+    69	    isetRemoveStable(&iset, isetIndex(&iset, 5));
+    70	    isetPrint(&iset, 10);
+    71	    /* test that isetResize is working */
+    72	    printf("Phase 7: test that isetResize is working\n");
+    73	    isetResize(&iset, 1024);
+    74	    isetPrint(&iset, 10);
+    75	    /* test that isetResize is working correctly */
+    76	    printf("Phase 8: test that isetResize is working correctly\n");
+    77	    fillRandom(bigData, BIGSZ, 20, 5000);
+    78	    isetAddArray(&iset, bigData, BIGSZ);
+    79	    isetPrint(&iset, 10);
+    80	    /* test that isetIndex and isetIndexFast are working correctly */
+    81	    printf("Phase 9 (slow):\n");
+    82	    gettimeofday(&startTime, 0);
+    83	    for (i = 0; i < NUMTESTS; i++)
+    84	        testIndex[i] = isetIndex(&iset, testValue[i]);
+    85	    gettimeofday(&finishTime, 0);
+    86	    for (i = 0; i < NUMTESTS; i++) {
+    87	        if (testIndex[i] < 0)
+    88	            printf("  %d not found\n", testValue[i]);
+    89	        else
+    90	            printf("  %d found at: %d (is %d)\n", testValue[i],
+    91	                   testIndex[i], iset.data[testIndex[i]]);
+    92	    }
+    93	    printf("Total search time was ");
+    94	    printTimeDiff(&startTime, &finishTime);
+    95	#ifdef FAST
+    96	    printf("Phase 10 (fast):\n");
+    97	    gettimeofday(&startTime, 0);
+    98	    for (i = 0; i < NUMTESTS; i++)
+    99	        testIndex[i] = isetIndexFast(&iset, testValue[i]);
+   100	    gettimeofday(&finishTime, 0);
+   101	    for (i = 0; i < NUMTESTS; i++) {
+   102	        if (testIndex[i] < 0)
+   103	            printf("  %d not found\n", testValue[i]);
+   104	        else
+   105	            printf("  %d found at: %d (is %d)\n",
+   106	                   testValue[i], testIndex[i], iset.data[testIndex[i]]);
+   107	    }
+   108	    printf("Total search time was ");
+   109	    printTimeDiff(&startTime, &finishTime);
+   110	#endif
+   111	    isetFree(&iset);
+   112	    return 0;
+   113	}
+   114	
+   115	/* Function: fillRandom
+   116	 * Purpose:  fill an integer array with random values in a given range
+   117	 * Argument: array      - an array of integers
+   118	 * Argument: arrLen     - the number of integers to generate
+   119	 * Argument: lowerBound - the lowest value that could be generated
+   120	 * Argument: upperBound - the highest value that could be generated
+   121	 * Returns:  nothing
+   122	 * Precondition: array points to a valid array of ints
+   123	 * Precondition: arrLen is not greater than the available space in array
+   124	 */
+   125	static int fillRandom(int array[], int arrLen, int lowerBound, int upperBound) {
+   126	    int i;
+   127	    /* static makes this a persistent variable
+   128	       that is initialized only once */
+   129	    static int notSeeded = 1;
+   130	    double range = 1.0 + upperBound - lowerBound;
+   131	    if (notSeeded) {
+   132	        /* if we want it seeded, the srand goes here */
+   133	        notSeeded = 0;
+   134	    }
+   135	    for (i = 0; i < arrLen; i++) {
+   136	        /* refactored the order to force doubles to be used w/o cast */
+   137	        array[i] = (int)(myrand() * (range / MYRAND_MAX) + lowerBound);
+   138	    }
+   139	    return i;
+   140	}
+   141	
+   142	/* POSIX.1-2001 gives the following example of an implementation of rand(),
+   143	 * useful when one needs the same sequence on different machines.
+   144	 */
+   145	static int myrand(void) {
+   146	    static unsigned long next = 1;
+   147	    next = next * 1103515245 + 12345;
+   148	    return((unsigned)(next/65536) % MYRAND_MAX);
+   149	}
+   150	
+   151	/* Function: printTimeDiff
+   152	 * Purpose:  print the difference in milliseconds between the two timeval structs
+   153	 * Argument: start    - timeval captured just before the timed event
+   154	 * Argument: stop     - timeval captured just after the time event
+   155	 * Returns:  nothing
+   156	 * Precondition: both pointers point to valid timeval structs
+   157	 * Precondition: both timevals were set by a UNIX gettimeofday function.
+   158	 */
+   159	void printTimeDiff(struct timeval *start, struct timeval *stop)
+   160	{
+   161	    double diff = (double)stop->tv_usec - start->tv_usec;
+   162	    diff += (stop->tv_sec - start->tv_sec) * 1000000.0;
+   163	    printf("%8.0lf milliseconds\n", diff);
+   164	}
+   165	
+sh-4.2$ gcc1[K -ansi IntegerSet.c hw13.c
+sh-4.2$ a.out
+Phase 1: test that isetInit is working correctly
+capacity: 35, length: 0
+Phase 2: test that isetAdd is working correctly
+     2     5    17
+Phase 3: test that isetAddArray is working correctly
+     2     5    17    22    23    24    25    26    27    28
+    29    30    31    32    34    35    36    38    39    40
+    41    42    43    44    45    46    48    49    50
+Phase 4: test that isetAdd is working with negative numbers
+   -24   -19   -18    -9    -8    -4     2     5    17    22
+    23    24    25    26    27    28    29    30    31    32
+    34    35    36    38    39    40    41    42    43    44
+    45    46    48    49    50
+Phase 5: test that isetClear is working correctly
+     0     1     2     3     4     5
+Phase 6: test that isetIndex & isetRemoveStable work correctly
+     1     3
+Phase 7: test that isetResize is working
+     1     3
+Phase 8: test that isetResize is working correctly
+     1     3    26    33    43    46    58    63    69    71
+    77    82    87    88    97   107   112   114   116   121
+   124   125   128   138   139   140   142   149   153   154
+   158   161   172   174   175   181   185   198   201   202
+   204   207   209   214   220   227   229   231   234   242
+   256   260   262   265   267   270   277   285   289   297
+   309   317   328   347   359   369   370   376   380   382
+   386   399   404   406   408   412   414   430   438   441
+   455   457   462   467   486   488   492   494   503   508
+   521   530   539   547   548   551   555   558   559   563
+   568   576   579   584   590   595   620   622   626   632
+   636   649   651   653   657   663   669   672   679   681
+   694   702   704   717   728   733   736   737   747   748
+   756   761   762   780   785   789   793   801   806   810
+   812   813   816   819   835   836   841   842   845   847
+   848   850   857   862   875   877   887   895   902   903
+   907   910   925   930   932   935   938   944   955   956
+   962   964   966   968   970   973   980   987   989  1003
+  1004  1006  1016  1023  1030  1035  1036  1051  1052  1055
+  1060  1080  1083  1093  1109  1110  1116  1120  1122  1123
+  1133  1135  1138  1152  1160  1165  1167  1181  1185  1190
+  1195  1200  1201  1202  1204  1214  1222  1224  1226  1228
+  1233  1239  1240  1243  1244  1250  1253  1260  1261  1265
+  1268  1294  1307  1316  1322  1323  1324  1328  1334  1337
+  1339  1345  1349  1352  1355  1372  1390  1395  1401  1410
+  1414  1419  1428  1440  1441  1462  1465  1470  1475  1478
+  1482  1487  1490  1495  1500  1503  1513  1514  1520  1524
+  1527  1534  1536  1546  1547  1562  1569  1572  1575  1584
+  1597  1615  1618  1624  1626  1636  1642  1643  1644  1646
+  1673  1674  1683  1693  1701  1707  1709  1720  1722  1727
+  1730  1734  1742  1743  1746  1749  1765  1768  1769  1770
+  1772  1774  1775  1781  1785  1789  1796  1803  1804  1805
+  1806  1814  1823  1829  1841  1846  1848  1849  1862  1875
+  1886  1887  1888  1889  1894  1895  1897  1900  1903  1905
+  1906  1908  1911  1913  1914  1916  1917  1918  1921  1922
+  1929  1940  1947  1959  1964  1968  1972  1984  1989  1991
+  2005  2006  2016  2020  2025  2028  2042  2043  2050  2051
+  2052  2055  2060  2065  2086  2091  2103  2104  2112  2113
+  2118  2124  2127  2128  2132  2140  2146  2151  2164  2169
+  2171  2172  2175  2185  2187  2188  2192  2194  2203  2212
+  2230  2233  2234  2242  2246  2249  2256  2266  2267  2282
+  2283  2285  2299  2313  2316  2330  2334  2335  2336  2351
+  2352  2356  2357  2360  2367  2382  2386  2389  2392  2395
+  2396  2397  2405  2410  2422  2435  2436  2450  2482  2485
+  2490  2492  2493  2500  2502  2504  2508  2524  2525  2526
+  2527  2530  2534  2549  2557  2558  2564  2567  2580  2581
+  2595  2597  2601  2607  2610  2613  2615  2618  2621  2626
+  2637  2644  2647  2656  2665  2666  2678  2679  2685  2688
+  2689  2690  2691  2698  2712  2713  2717  2729  2739  2755
+  2758  2766  2770  2774  2782  2783  2784  2792  2793  2796
+  2799  2804  2807  2824  2829  2836  2837  2845  2847  2851
+  2853  2864  2868  2893  2899  2900  2903  2904  2916  2921
+  2924  2933  2934  2940  2945  2948  2957  2963  2971  2979
+  2981  2982  2987  2993  2994  3003  3005  3006  3009  3029
+  3032  3034  3035  3041  3044  3049  3053  3054  3056  3060
+  3064  3070  3078  3079  3084  3089  3090  3098  3107  3115
+  3118  3122  3128  3130  3137  3140  3143  3144  3145  3151
+  3153  3163  3165  3174  3177  3180  3186  3192  3197  3198
+  3206  3213  3225  3227  3228  3231  3240  3241  3244  3256
+  3258  3262  3263  3265  3271  3280  3282  3283  3299  3302
+  3306  3309  3335  3343  3350  3360  3361  3363  3365  3370
+  3371  3377  3379  3380  3381  3388  3392  3395  3396  3398
+  3426  3427  3430  3440  3442  3459  3466  3471  3479  3488
+  3489  3495  3506  3511  3519  3523  3525  3529  3531  3535
+  3544  3545  3546  3547  3552  3554  3561  3567  3571  3573
+  3575  3577  3578  3581  3584  3596  3602  3604  3608  3611
+  3619  3626  3633  3636  3639  3647  3653  3655  3657  3658
+  3668  3670  3677  3679  3680  3685  3690  3697  3698  3703
+  3707  3711  3715  3726  3730  3750  3751  3756  3763  3770
+  3771  3779  3781  3782  3787  3789  3794  3796  3799  3806
+  3808  3811  3817  3820  3824  3825  3837  3842  3851  3860
+  3872  3874  3876  3880  3894  3898  3899  3902  3907  3913
+  3920  3926  3933  3945  3946  3949  3950  3954  3955  3958
+  3969  3971  3979  3988  3992  3994  4000  4003  4006  4007
+  4014  4018  4023  4026  4031  4042  4051  4072  4075  4076
+  4079  4099  4100  4101  4104  4105  4118  4121  4145  4146
+  4156  4166  4168  4173  4179  4181  4186  4191  4192  4196
+  4200  4203  4211  4212  4213  4216  4221  4223  4225  4228
+  4231  4246  4250  4252  4256  4258  4267  4269  4278  4288
+  4301  4308  4313  4324  4331  4335  4349  4356  4363  4364
+  4368  4372  4375  4378  4381  4383  4390  4391  4403  4407
+  4408  4412  4415  4417  4420  4427  4429  4439  4441  4453
+  4460  4462  4474  4476  4477  4480  4490  4491  4495  4513
+  4520  4521  4529  4539  4542  4544  4546  4547  4565  4566
+  4567  4570  4574  4578  4580  4597  4600  4604  4605  4622
+  4632  4637  4642  4650  4664  4665  4671  4672  4691  4718
+  4722  4726  4730  4739  4749  4767  4769  4773  4779  4785
+  4786  4787  4788  4791  4794  4799  4815  4822  4823  4837
+  4841  4847  4866  4886  4890  4891  4892  4902  4906  4912
+  4914  4915  4930  4931  4932  4939  4942  4948  4950  4958
+  4963  4973  4979  4988  4991  4993  4994  4995
+Phase 9 (slow):
+  3840 not found
+  4995 found at: 907 (is 4995)
+  -24 not found
+  77 found at: 10 (is 77)
+  4000 found at: 736 (is 4000)
+  309 found at: 60 (is 309)
+  2050 found at: 368 (is 2050)
+  4539 found at: 833 (is 4539)
+Total search time was       15 milliseconds
+sh-4.2$ exit
+exit
+
+Script done on Thu 18 Apr 2019 01:50:21 PM MST

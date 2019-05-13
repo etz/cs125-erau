@@ -1,0 +1,244 @@
+Script started on Wed 03 Apr 2019 11:16:54 PM MST
+sh-4.2$ cat -n IntegerBuffer.c
+     1	#include <stdio.h>
+     2	#include "IntegerBuffer.h"
+     3	
+     4	void ibufInit(IntegerBuffer *ibuf) {
+     5	    
+     6	    ibuf->dataLength = 0;
+     7	    ibuf->dataCapacity = sizeof(ibuf->data) / sizeof(ibuf->data[0]);
+     8	    
+     9	}
+    10	
+    11	void ibufClear(IntegerBuffer *ibuf) {
+    12	    
+    13	    int i;
+    14	    for (i = 0; i < ibuf->dataLength; i++) {
+    15	        ibuf->data[i] = 0;
+    16	    }
+    17	    ibuf->dataLength = 0;
+    18	}
+    19	
+    20	
+    21	int ibufAdd(IntegerBuffer *ibuf, int value) {
+    22	    
+    23	    if (ibuf->dataLength < ibuf->dataCapacity) {
+    24	        ibuf->dataLength ++;
+    25	        ibuf->data[ibuf->dataLength - 1] = value;
+    26	        return 1;
+    27	    }
+    28	    else {
+    29	        return 0;
+    30	    }
+    31	}
+    32	
+    33	int ibufIndex(const IntegerBuffer *ibuf, int value) {
+    34	    
+    35	    int x;
+    36	    for (x = 0; x < ibuf->dataLength; x++) {
+    37	        if (ibuf->data[x] == value) {
+    38	            return x;
+    39	        }
+    40	    }
+    41	    return -1;
+    42	}
+    43	
+    44	int ibufAddArray(IntegerBuffer *ibuf, const int array[], int arrLen) {
+    45	    
+    46	    int x;
+    47	    int c;
+    48	    for (x = 0; x < arrLen; x++) {
+    49	        ibufAdd(ibuf, array[x]);
+    50	        c++;
+    51	    }
+    52	    return c;
+    53	}
+    54	
+    55	int ibufRemoveFast(IntegerBuffer *ibuf, int index) {
+    56	    
+    57	    if (index < 0 || index >= ibuf->dataLength) {
+    58	        return 0;
+    59	    }
+    60	    else {
+    61	        int value = ibuf->data[ibuf->dataLength - 1];
+    62	        ibuf->data[index] = value;
+    63	        value = 0;
+    64	        ibuf->dataLength --;
+    65	        return 1;
+    66	    }
+    67	}
+    68	
+    69	int ibufRemoveStable(IntegerBuffer *ibuf, int index) {
+    70	    
+    71	    if (index < 0 || index >= ibuf->dataLength) {
+    72	        return 0;
+    73	    }
+    74	    else {
+    75	        int x;
+    76	        ibuf->data[index] =  0;
+    77	        for (x = (index + 1); x < ibuf->dataLength; x++) {
+    78	            ibuf->data[x - 1] = ibuf->data[x];
+    79	        }
+    80	        ibuf->dataLength --;
+    81	        return 1;
+    82	    }
+    83	}
+    84	
+    85	void ibufPrint(const IntegerBuffer *ibuf, int numberOfColumns) {
+    86	    int i = 0;
+    87	    for (i = 0; i < ibuf->dataLength; i++) {
+    88	        if (i % numberOfColumns== 0 && i != 0)
+    89	            fputc('\n', stdout);
+    90	        printf("%6d", ibuf->data[i]);
+    91	    }
+    92	    fputc('\n', stdout);
+    93	}
+    94	
+sh-4.2$ cat -n IntegerBuffer.c
+     1	#ifndef INTEGER_BUFFER_H
+     2	#define INTEGER_BUFFER_H
+     3	/*
+     4	 * File:    IntegerBuffer.h
+     5	 * Project: Homework 11
+     6	 * Purpose: Type declarations for the integer data buffer assignment.
+     7	 * Author:  Michael Van Hilst
+     8	 * Version: 1.0 November 11, 2017 (in the 11th hour of the 11th day ...)
+     9	 *          1.1 July 25, 2018     changed name of buffer array to data
+    10	 *          2.0 March 29, 2019    update for 2019
+    11	 *
+    12	 * Copyright 2017, 2019 (c) Michael Van Hilst All rights reserverd.
+    13	 */
+    14	typedef struct {
+    15	    int dataCapacity;
+    16	    int dataLength;
+    17	    int data[32];
+    18	} IntegerBuffer;
+    19	
+    20	void ibufInit(IntegerBuffer *ibuf);
+    21	void ibufClear(IntegerBuffer *ibuf);
+    22	void ibufPrint(const IntegerBuffer *ibuf, int numberOfColumns);
+    23	int ibufAdd(IntegerBuffer *ibuf, int value);
+    24	int ibufAddArray(IntegerBuffer *ibuf, const int array[], int arrayLength);
+    25	int ibufIndex(const IntegerBuffer *ibuf, int value);
+    26	int ibufRemoveFast(IntegerBuffer *ibuf, int index);
+    27	int ibufRemoveStable(IntegerBuffer *ibuf, int index);
+    28	
+    29	#endif /* INTEGER_BUFFER_H */
+    30	
+sh-4.2$ cat -n hw11.c
+     1	/*
+     2	 * File:    hw11.c
+     3	 * Project: Homework 11
+     4	 * Purpose: test driver for student homework
+     5	 * Author:  Michael Van Hilst
+     6	 * Version: 1.0 November 11, 2017 (in the 11th hour of the 11th day ...)
+     7	 *          2.0 March 29, 2019 updated with different behavior
+     8	 *
+     9	 * Copyright 2017,2019 (c) Michael Van Hilst All rights reserverd.
+    10	 */
+    11	#include <stdio.h>         /* for printf() */
+    12	#include "IntegerBuffer.h" /* homework project header file */
+    13	
+    14	void fillRandom(int array[], int arrLen, int lowerBound, int upperBound);
+    15	int myrand(void);
+    16	#define MYRAND_MAX 32768
+    17	
+    18	/* DATASZ is set to exceed size of array in the IntegerBuffer */
+    19	#define DATASZ 48
+    20	int main(void) {
+    21	    int i = 0;
+    22	    int index = 0;
+    23	    int result = 0;
+    24	    IntegerBuffer ibuf;
+    25	    int data[DATASZ];
+    26	    /* test that ibufInit is working correctly */
+    27	    printf("Phase 1:\n");
+    28	    ibufInit(&ibuf);
+    29	    printf("size: %d, length: %d\n", ibuf.dataCapacity, ibuf.dataLength);
+    30	    /* test that ibufAdd is working correctly */
+    31	    printf("Phase 2:\n");
+    32	    ibufAdd(&ibuf, 5);
+    33	    ibufAdd(&ibuf, 17);
+    34	    ibufPrint(&ibuf, 10);
+    35	    /* test that ibufAddArray is working correctly */
+    36	    printf("Phase 3:\n");
+    37	    fillRandom(data, DATASZ, 20,75);
+    38	    result = ibufAddArray(&ibuf, data, DATASZ);
+    39	    printf("reported adding %d of %d\n", result, DATASZ);
+    40	    ibufPrint(&ibuf, 9);
+    41	    /* test that ibufClear is working correctly */
+    42	    printf("Phase 4:\n");
+    43	    ibufClear(&ibuf);
+    44	    for (i = 0; i < 5; i++)
+    45	        ibufAdd(&ibuf, i);
+    46	    for (i = 5; i > 0; i--)
+    47	        ibufAdd(&ibuf, i);
+    48	    ibufPrint(&ibuf, 10);
+    49	    /* test that ibufIndex, ibufRemoveDast and ibufRemoveStable work */
+    50	    printf("Phase 5:\n");
+    51	    index = ibufIndex(&ibuf, 2);
+    52	    ibufRemoveFast(&ibuf, index);
+    53	    ibufRemoveStable(&ibuf, ibufIndex(&ibuf, 4));
+    54	    ibufPrint(&ibuf, 10);
+    55	    /* use the #ifdef NOTYET line to hide parts you haven't yet done */
+    56	#ifdef NOTYET
+    57	#endif
+    58	    return 0;
+    59	}
+    60	
+    61	/* Function: fillRandom
+    62	 * Purpose:  fill an integer array with random values in a given range
+    63	 * Argument: array      - an array of integers
+    64	 * Argument: arrLen     - the number of integers to generate
+    65	 * Argument: lowerBound - the lowest value that could be generated
+    66	 * Argument: upperBound - the highest value that could be generated
+    67	 * Returns:  nothing
+    68	 * Precondition: array points to a valid array of ints
+    69	 * Precondition: arrLen is not greater than the available space in array
+    70	 */
+    71	void fillRandom(int array[], int arrLen, int lowerBound, int upperBound) {
+    72	    int i;
+    73	    /* static makes this a persistent variable
+    74	       that is initialized only once */
+    75	    static int notSeeded = 1;
+    76	    double range = 1.0 + upperBound - lowerBound;
+    77	    if (notSeeded) {
+    78	        /* if we want it seeded, the srand goes here */
+    79	        notSeeded = 0;
+    80	    }
+    81	    for (i = 0; i < arrLen; i++) {
+    82	        /* refactored the order to force doubles to be used w/o cast */
+    83	        /* a good optimizer will also recognize that (range / RAND_MAX)
+    84	         * can be done outside the loop */
+    85	        array[i] = (int)(myrand() * (range / MYRAND_MAX) + lowerBound);
+    86	    }
+    87	}
+    88	
+    89	/* POSIX.1-2001 gives the following example of an implementation of rand(),
+    90	 * useful when one needs the same sequence on different machines.
+    91	 */
+    92	int myrand(void) {
+    93	   static unsigned long next = 1;
+    94	   next = next * 1103515245 + 12345;
+    95	   return((unsigned)(next/65536) % MYRAND_MAX);
+    96	}
+sh-4.2$ gcc -ansi -Wall hw11.c IntegerBuffer.c
+sh-4.2$ a.out
+Phase 1:
+size: 32, length: 0
+Phase 2:
+     5    17
+Phase 3:
+reported adding 48 of 48
+     5    17    48    29    37    49    73    29    59
+    32    47    26    24    41    35    40    75    49
+    62    56    62    63    66    28    55    37    39
+    71    49    42    53    63
+Phase 4:
+     0     1     2     3     4     5     4     3     2     1
+Phase 5:
+     0     1     1     3     5     4     3     2
+sh-4.2$ exit
+exit
+
+Script done on Wed 03 Apr 2019 11:17:43 PM MST
